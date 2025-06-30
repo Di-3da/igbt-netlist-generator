@@ -2,12 +2,9 @@
 
 import apiService from './api.service';
 import type { FileInfo } from '@/types/app';
-// 移除未使用的 formatFileSize 导入
-// import { formatFileSize } from '@/utils/file';
 
 class FileService {
   async uploadFile(sessionId: string, file: File): Promise<FileInfo> {
-    // 添加类型断言
     const response = await apiService.uploadFile<{ id: string; path: string }>(
       `/api/session/${sessionId}/upload_file`,
       file,
@@ -15,10 +12,10 @@ class FileService {
     );
 
     return {
-      id: response.id, // 直接访问 id
+      id: response.id,
       name: file.name,
       size: file.size,
-      path: response.path, // 直接访问 path
+      path: response.path,
       uploaded: true,
       sessionId,
       createdAt: new Date().toISOString()
@@ -30,7 +27,6 @@ class FileService {
   }
 
   async downloadFile(sessionId: string, filePath: string, fileName: string): Promise<void> {
-    // 明确指定响应类型为 Blob
     const response = await apiService.get<Blob>(
       `/api/session/${sessionId}/download/${encodeURIComponent(filePath)}`,
       {
@@ -57,6 +53,27 @@ class FileService {
       await this.downloadFile(sessionId, netlistFile.path, netlistFile.name);
     } else {
       throw new Error('未找到网表文件');
+    }
+  }
+
+  // 清理旧文件功能
+  async cleanOldFiles(sessionId: string, days: number): Promise<{ success: boolean; cleanedFiles: number }> {
+    try {
+      const response = await apiService.post<{ success: boolean; cleaned_files: number }>(
+        `/api/session/${sessionId}/clean_old_files`,
+        { days }
+      );
+
+      return {
+        success: response.success,
+        cleanedFiles: response.cleaned_files
+      };
+    } catch (error) {
+      console.error('清理文件失败:', error);
+      return {
+        success: false,
+        cleanedFiles: 0
+      };
     }
   }
 }

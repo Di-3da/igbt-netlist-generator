@@ -12,10 +12,12 @@ export interface Session {
 
 // 任务类型
 export interface Task {
+  error: string;
   id: string;
   name: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   created_at: string;
+  error?: string; // 新增错误信息字段
 }
 
 // 文件类型
@@ -76,6 +78,8 @@ export interface SessionStatus {
   tasks: TaskStatus[];
 }
 
+// 会话输出类型
 export interface SessionOutput {
   output: string;
 }
+

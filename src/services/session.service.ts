@@ -1,7 +1,7 @@
 // src/services/session.service.ts
 
 import apiService from './api.service';
-import type { Session } from '@/types/app';
+import type { Session, Task, SessionOutput } from '@/types/app';
 
 class SessionService {
   async checkHealth(): Promise<boolean> {
@@ -27,6 +27,16 @@ class SessionService {
 
   async deleteSession(sessionId: string): Promise<{ success: boolean }> {
     return apiService.delete<{ success: boolean }>(`/api/session/${sessionId}`);
+  }
+
+  // 获取当前任务
+  async getCurrentTask(sessionId: string): Promise<Task> {
+    return apiService.get<Task>(`/api/session/${sessionId}/current_task`);
+  }
+
+  // 获取当前输出
+  async getCurrentOutput(sessionId: string): Promise<SessionOutput> {
+    return apiService.get<SessionOutput>(`/api/session/${sessionId}/current_output`);
   }
 }
 

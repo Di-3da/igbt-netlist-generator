@@ -29,7 +29,7 @@ export const useUIStore = defineStore('ui', () => {
   }
 
   // 切换主题
-  function toggleTheme() {
+  function toggleTheme(newTheme: string) {
     theme.value = theme.value === 'light' ? 'dark' : 'light';
     localStorage.setItem('theme', theme.value);
   }

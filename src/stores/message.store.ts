@@ -4,6 +4,9 @@ import { defineStore } from 'pinia';
 import messageService from '@/services/message.service';
 import { ref } from 'vue';
 import type { Message, FileInfo } from '@/types/app'; // 导入 FileInfo 类型
+// 现在可以安全地导入 saveAs
+import { saveAs } from 'file-saver';
+
 
 export const useMessageStore = defineStore('message', () => {
   const messages = ref<Message[]>([]);
@@ -56,6 +59,36 @@ export const useMessageStore = defineStore('message', () => {
     messages.value = [];
   }
 
+  // 导出对话历史
+  function exportHistory(sessionId: string) {
+    // 过滤出当前会话的消息
+    const sessionMessages = messages.value.filter(
+      msg => msg.sessionId === sessionId
+    );
+
+    // 创建消息历史的 JSON 数据
+    const historyData = {
+      sessionId,
+      timestamp: new Date().toISOString(),
+      messageCount: sessionMessages.length,
+      messages: sessionMessages
+    };
+
+    // 创建 Blob 对象并保存文件
+    const blob = new Blob(
+      [JSON.stringify(historyData, null, 2)],
+      { type: 'application/json' }
+    );
+
+    // 生成文件名
+    const fileName = `igbt_chat_history_${sessionId.substring(0, 8)}.json`;
+
+    // 使用 file-saver 保存文件
+    saveAs(blob, fileName);
+
+    return fileName;
+  }
+
   return {
     messages,
     isGenerating,
@@ -63,6 +96,7 @@ export const useMessageStore = defineStore('message', () => {
     stopGeneration,
     addSystemMessage,
     addAssistantMessage,
-    clearMessages
+    clearMessages,
+    exportHistory // 导出新添加的函数
   };
 });

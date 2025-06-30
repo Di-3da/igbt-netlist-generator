@@ -34,7 +34,6 @@
 <script setup lang="ts">
 import { FileOutlined, DownloadOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { formatFileSize, truncateFileName } from '@/utils/file'
-import { defineProps } from 'vue'
 
 const props = defineProps({
   file: {

@@ -22,7 +22,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/sessions',
     name: 'sessions',
     component: () => import('@/views/SessionsView.vue')
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: () => import('@/views/SettingsView.vue')
   }
+
 ];
 
 const router = createRouter({

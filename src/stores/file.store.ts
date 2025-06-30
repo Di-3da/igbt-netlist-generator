@@ -44,6 +44,23 @@ export const useFileStore = defineStore('file', () => {
     return sessionFiles.value;
   }
 
+  // 添加清理旧文件方法
+  const cleanOldFiles = async (sessionId: string, days: number) => {
+    try {
+      const result = await fileService.cleanOldFiles(sessionId, days);
+      return {
+        success: true,
+        cleanedFiles: result.cleanedFiles
+      };
+    } catch (error) {
+      console.error('清理文件失败:', error);
+      return {
+        success: false,
+        cleanedFiles: 0
+      };
+    }
+  };
+
   return {
     currentUploadedFiles,
     sessionFiles,
@@ -52,6 +69,7 @@ export const useFileStore = defineStore('file', () => {
     clearUploadedFiles,
     downloadFile,
     quickDownloadNetlist,
-    listSessionFiles
+    listSessionFiles,
+    cleanOldFiles // 添加这个方法到返回对象
   };
 });
